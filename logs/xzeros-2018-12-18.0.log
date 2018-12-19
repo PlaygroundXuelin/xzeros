@@ -1,0 +1,8 @@
+18:16:14.128 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @8327ms to org.eclipse.jetty.util.log.Slf4jLog
+18:17:26.413 [nREPL-worker-2] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:17:26.475 [nREPL-worker-2] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@625ea7d0{/,null,AVAILABLE}
+18:17:26.541 [nREPL-worker-2] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@1520ce9e{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:17:26.542 [nREPL-worker-2] INFO  org.eclipse.jetty.server.Server  - Started @80743ms
+18:18:46.376 [qtp719769060-34] INFO  io.pedestal.http  - {:msg "GET /", :line 80}
+18:18:47.077 [qtp719769060-28] INFO  io.pedestal.http  - {:msg "GET /favicon.ico", :line 80}
+18:18:50.766 [qtp719769060-32] INFO  io.pedestal.http  - {:msg "GET /about", :line 80}
