@@ -1,0 +1,57 @@
+18:06:07.330 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @8577ms to org.eclipse.jetty.util.log.Slf4jLog
+18:08:17.637 [nREPL-worker-2] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:08:17.692 [nREPL-worker-2] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@7e160270{/,null,AVAILABLE}
+18:08:17.721 [nREPL-worker-2] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@1f7ce687{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:08:17.723 [nREPL-worker-2] INFO  org.eclipse.jetty.server.Server  - Started @138975ms
+18:09:07.471 [qtp488880370-35] INFO  io.pedestal.http  - {:msg "GET /", :line 80}
+18:09:07.475 [qtp488880370-35] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:09:07.491 [qtp488880370-35] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}
+18:09:08.111 [qtp488880370-29] INFO  io.pedestal.http  - {:msg "GET /favicon.ico", :line 80}
+18:09:08.111 [qtp488880370-29] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:09:08.116 [qtp488880370-29] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" ""}, :line 111}
+18:10:43.820 [qtp488880370-29] INFO  io.pedestal.http  - {:msg "GET /todo", :line 80}
+18:10:43.820 [qtp488880370-29] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:10:43.826 [qtp488880370-29] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}
+18:14:35.531 [nREPL-worker-4] INFO  o.e.jetty.server.AbstractConnector  - Stopped ServerConnector@1f7ce687{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:14:35.535 [nREPL-worker-4] INFO  o.e.j.server.handler.ContextHandler  - Stopped o.e.j.s.ServletContextHandler@7e160270{/,null,UNAVAILABLE}
+18:14:35.539 [nREPL-worker-4] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:14:35.541 [nREPL-worker-4] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@58d99d8b{/,null,AVAILABLE}
+18:14:35.544 [nREPL-worker-4] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@7de68c93{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:14:35.544 [nREPL-worker-4] INFO  org.eclipse.jetty.server.Server  - Started @516799ms
+18:20:52.015 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @7413ms to org.eclipse.jetty.util.log.Slf4jLog
+18:21:39.284 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @7418ms to org.eclipse.jetty.util.log.Slf4jLog
+18:21:46.194 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:21:46.230 [nREPL-worker-0] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@2983c5ae{/,null,AVAILABLE}
+18:21:46.260 [nREPL-worker-0] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@79d7579b{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:21:46.261 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - Started @14397ms
+18:21:52.978 [qtp1785688501-25] INFO  io.pedestal.http  - {:msg "GET /db", :line 80}
+18:21:52.984 [qtp1785688501-25] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:21:52.991 [qtp1785688501-25] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}
+18:26:55.884 [nREPL-worker-1] INFO  o.e.jetty.server.AbstractConnector  - Stopped ServerConnector@79d7579b{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:26:55.892 [nREPL-worker-1] INFO  o.e.j.server.handler.ContextHandler  - Stopped o.e.j.s.ServletContextHandler@2983c5ae{/,null,UNAVAILABLE}
+18:26:55.896 [nREPL-worker-1] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:26:55.899 [nREPL-worker-1] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@7647f634{/,null,AVAILABLE}
+18:26:55.907 [nREPL-worker-1] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@460f5309{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:26:55.907 [nREPL-worker-1] INFO  org.eclipse.jetty.server.Server  - Started @324046ms
+18:27:02.443 [qtp1995910338-46] INFO  io.pedestal.http  - {:msg "GET /db", :line 80}
+18:27:02.444 [qtp1995910338-46] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:27:02.449 [qtp1995910338-46] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}
+18:28:26.708 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @7499ms to org.eclipse.jetty.util.log.Slf4jLog
+18:28:32.010 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:28:32.051 [nREPL-worker-0] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@40370c4f{/,null,AVAILABLE}
+18:28:32.085 [nREPL-worker-0] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@5df91eb5{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:28:32.087 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - Started @12879ms
+18:28:37.260 [qtp923263236-25] INFO  io.pedestal.http  - {:msg "GET /db", :line 80}
+18:28:37.265 [qtp923263236-25] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:28:37.276 [qtp923263236-25] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}
+18:30:50.057 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @8394ms to org.eclipse.jetty.util.log.Slf4jLog
+18:31:03.473 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+18:31:03.525 [nREPL-worker-0] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@7f202258{/,null,AVAILABLE}
+18:31:03.566 [nREPL-worker-0] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@4f54bab{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+18:31:03.567 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - Started @21907ms
+18:31:10.582 [qtp365157044-26] INFO  io.pedestal.http  - {:msg "GET /db", :line 80}
+18:31:10.586 [qtp365157044-26] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:31:10.599 [qtp365157044-26] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}
+18:31:15.741 [qtp365157044-20] INFO  io.pedestal.http  - {:msg "GET /db/schema", :line 80}
+18:31:15.741 [qtp365157044-20] INFO  io.pedestal.http.cors  - {:msg "cors request processing", :origin "", :allowed true, :line 84}
+18:31:15.747 [qtp365157044-20] INFO  io.pedestal.http.cors  - {:msg "cors response processing", :cors-headers {"Access-Control-Allow-Origin" "", "Access-Control-Allow-Credentials" "true", "Access-Control-Expose-Headers" "Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, X-Xss-Protection, X-Download-Options, X-Permitted-Cross-Domain-Policies, Content-Security-Policy"}, :line 111}

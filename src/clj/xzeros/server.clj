@@ -2,7 +2,7 @@
   (:gen-class) ; for -main method in uberjar
   (:require [io.pedestal.http :as server]
             [io.pedestal.http.route :as route]
-            [xzeros.service :as service]))
+            [xzeros.xservice :as service]))
 
 ;; This is an adapted service map, that can be started and stopped
 ;; From the REPL you can call server/start and server/stop on this service
@@ -28,6 +28,13 @@
       server/dev-interceptors
       server/create-server
       server/start))
+
+(defonce server (atom nil))
+(defn start-dev [] (reset! server (run-dev)))
+(defn stop-dev [] (server/stop @server))
+(defn restart-dev []
+  (stop-dev)
+  (start-dev))
 
 (defn -main
   "The entry-point for 'lein run'"

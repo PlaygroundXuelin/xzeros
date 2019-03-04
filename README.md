@@ -5,12 +5,13 @@ FIXME
 ## Getting Started
 
 1. Start the application: `lein run`
-2. Go to [localhost:8080](http://localhost:8080/) to see: `Hello World!`
-3. Read your app's source code at src/xzeros/service.clj. Explore the docs of functions
-   that define routes and responses.
-4. Run your app's tests with `lein test`. Read the tests at test/xzeros/service_test.clj.
-5. Learn more! See the [Links section below](#links).
-
+    or 
+    ```
+    lein repl
+    (-main)
+    ```
+2. Go to http://localhost:3701 to see: `Hello World!`
+    or http://localhost:3701/about
 
 ## Configuration
 

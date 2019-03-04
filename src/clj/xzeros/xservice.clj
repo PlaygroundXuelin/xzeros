@@ -1,8 +1,13 @@
-(ns xzeros.service
+(ns xzeros.xservice
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
+            [io.pedestal.http.route :as route :refer [expand-routes]]
+            [xzeros.service :as service]
+            [xzeros.xzero]
+            [xzeros.cloud-config-service]
             [ring.util.response :as ring-resp]))
+
 
 (defn about-page
   [request]
@@ -12,21 +17,35 @@
 
 (defn home-page
   [request]
-  (ring-resp/response "Hello World!"))
+  (ring-resp/response "Welcome to xzeros!"))
+
+(defn hello-page
+  [request]
+  (let [name (-> request :query-params :name)]
+    {:status 200 :body (str "Hello, " (or name "world"))}
+    )
+  )
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
 ;; apply to / and its children (/about).
-(def common-interceptors [(body-params/body-params) http/html-body])
+;(def common-interceptors [(body-params/body-params) http/html-body])
 
-;; Tabular routes
+;; Terse routes
 (def routes
-  `[
-    [
-     ["/" {:get home-page}
-      ^:interceptors [(body-params/body-params) http/html-body]
-      ["/about" {:get about-page}]]]
-    ])
+  [
+   [
+    ["/" {:get `home-page}
+
+     ["/about" {:get `about-page}]
+     ["/hello"
+      ^:interceptors [service/coerce-body service/content-neg-intc (body-params/body-params)]
+      {:get `hello-page}]
+     xzeros.xzero/routes
+     xzeros.cloud-config-service/routes
+     ]]
+   ]
+  )
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]

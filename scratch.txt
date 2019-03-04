@@ -1,0 +1,257 @@
+;; see drive files too
+
+
+(require '[xzeros.cloud.db :as xdb])
+
+(require '[datomic.client.api :as d])
+
+(def client (xdb/get-client))
+
+(def conn (xdb/get-connection))
+
+(def test-org {:org/id "test-org-1"
+           :org/name "test-org-1"})
+(d/transact conn {:tx-data [test-org]})
+; find orgs by ids
+(def find-orgs-by-ids
+  '[:find (pull ?e [*])
+  :in $, [?org-id ...]
+  :where [?e :org/id ?org-id]]
+)
+(d/q find-orgs-by-ids (d/db conn) ["test-org-1"])
+
+(def test-account
+  {:account/id "test-account-1"
+   :account/name "test-account-1"
+    :account/org {:org/id "test-org-1"}
+    :account/gcpServiceAccountUser
+    :account/gcpSecret
+    :account/gcpTokenTime
+    :account/gcpTokenRefreshMs
+  }
+  )
+
+; create some kvs
+(d/transact conn {:tx-data
+(mapv (fn [[k v]] {:kv/key k :kv/value v}) [ ["a" "av"] ["b" "bv"] ["c" "cv"] ])
+})
+; query kvs
+(def db (d/db conn))
+(def all-kvs '[:find (pull ?e [*]) :where [?e :kv/key]])
+(d/q all-kvs db)
+
+
+(import '(java.util Date UUID))
+
+; create a job batch
+(defn new-batch []
+  (let [uuid (java.util.UUID/randomUUID)]
+    {:jobBatch/id uuid
+     :jobBatch/status {:task/status :taskStatus/not-started }
+     }
+  )
+  )
+(d/transact conn {:tx-data [(new-batch)]})
+
+; find the new batch
+(def all-batches '[:find (pull ?e [:jobBatch/id {:jobBatch/status [* {:task/status [:db/ident]}]}]) :where [?e :jobBatch/id]])
+(d/q all-batches (d/db conn))
+
+(defn update-batch [batch-id status]
+  {:jobBatch/id batch-id :jobBatch/status status}
+)
+(d/transact conn {:tx-data [
+  {
+  :jobBatch/id #uuid "e39fbc8c-a826-4fef-84b1-77e37bc84175"
+  :jobBatch/status {:task/status :taskStatus/started :task/startTime (java.util.Date.)}
+  }
+  ]})
+
+; create a job
+(defn new-job [batch-id vars]
+  (let [uuid (java.util.UUID/randomUUID)]
+  {
+   :job/id uuid
+   :job/jobBatch [:jobBatch/id batch-id]
+   :job/vars vars
+   :job/status {:task/status :taskStatus/started :task/startTime (java.util.Date.)}
+  }
+  ))
+(d/transact conn {:tx-data [
+  (new-job #uuid "e39fbc8c-a826-4fef-84b1-77e37bc84175" [{:kv/key "k1" :kv/value "v1"}])
+  ]})
+;find the new job
+
+(def all-jobs '[:find (pull ?e
+  [
+   *
+   {:job/status [* {:task/status [:db/ident]}]}
+   {:job/jobBatch [:jobBatch/id]}
+   ]
+  ) :where [?e :job/id]])
+(d/q all-jobs (d/db conn))
+
+;update the job
+;kvs will treat existing kvs as a map and merge that with new kvs
+
+(def find-jobs-by-ids
+  '[:find (pull ?e [* {:job/vars [:db/id :kv/key :kv/value]} {:job/status [* {:task/status [:db/ident]} ]} {:job/jobBatch [:jobBatch/id]} ])
+  :in $, [?job-id ...]
+  :where [?e :job/id ?job-id]]
+)
+(d/q find-jobs-by-ids (d/db conn) [#uuid "eab132de-543b-4db9-9e0c-36d3a3566b0e"])
+(defn vars-to-map [vars]
+  (into {}
+  (map (fn [{:keys [:kv/key :kv/value]}] [key value]) vars)
+  )
+)
+(defn get-job-vars [job]
+  (vars-to-map (:job/vars job))
+)
+(def job (ffirst (d/q find-job-by-ids db [#uuid "eab132de-543b-4db9-9e0c-36d3a3566b0e"])))
+(get-job-vars job)
+
+(require '[clojure.set :as set])
+
+(defn update-job-vars [conn job-id new-vars]
+  (let [db (d/db conn)
+    job (ffirst (d/q find-jobs-by-ids db [job-id]))
+    old-vars-map (get-job-vars job)
+    retract-keys (set/intersection (set (keys old-vars-map)) (set (keys new-vars)))
+    retract-vars-eids
+      (let [old-vars (:job/vars job)
+            retract-vars (filter #(retract-keys (:kv/key %)) old-vars)]
+        (map :db/id retract-vars))
+    retracts (mapv (fn [var-eid] [:db/retract (:db/id job) :job/vars var-eid]) retract-vars-eids)
+    new-vars-data (mapv (fn [[k v]] {:kv/key k :kv/value v}) (seq new-vars))
+    assertion {:job/id (:job/id job) :job/vars new-vars-data}
+    ]
+    (d/transact conn {:tx-data (conj retracts assertion)})
+))
+
+(update-job-vars conn  #uuid "33f35ed9-eb07-4b51-8918-cdfcd1525829" {"k2" "v2.1" "k3" "v3"})
+
+(defn add-job-vars [conn job-id new-vars]
+  (let [
+    new-vars-data (mapv (fn [[k v]] {:kv/key k :kv/value v}) (seq new-vars))
+    assertion {:job/id (:job/id job) :job/vars new-vars-data}
+    ]
+    (d/transact conn {:tx-data [assertion]})
+))
+
+
+; rests
+{:rest/id "gcpListProjects"
+ :rest/url "https://cloudresourcemanager.googleapis.com/v1/projects?pageToken={pageToken}"
+ :rest/method :httpMethod/get
+ :rest/contentType ""
+ :rest/content ""
+ :rest/params 
+  [
+  ]
+ :rest/storeKey "gcpListProjects"
+ :rest/groupId "gcp"
+}
+
+
+{:rest/id "gcpGetProjectIamPolicy"
+ :rest/url "https://cloudresourcemanager.googleapis.com/v1/projects/{projectId}:getIamPolicy"
+ :rest/method :httpMethod/post
+ :rest/contentType ""
+ :rest/content ""
+ :rest/params 
+  [{:restParam/name "projectId"
+   :restParam/key "gcpListProjects"
+   :restParam/expression "?? /projects/projectId"}
+  ]
+ :rest/storeKey "gcpGetProjectIamPolicy"
+ :rest/groupId "gcp"
+}
+
+{:rest/id "gcpListComputeZones"
+ :rest/url "https://www.googleapis.com/compute/v1/projects/{projectId}/zones"
+ :rest/method :httpMethod/get
+ :rest/contentType ""
+ :rest/content ""
+ :rest/params 
+  [{:restParam/name "projectId"
+   :restParam/key "gcpListProjects"
+   :restParam/expression "?? /projects/projectId"}
+  ]
+ :rest/storeKey "gcpListComputeZones"
+ :rest/groupId "gcp"
+}
+
+{:rest/id "gcpListComputeInstances"
+ :rest/url "https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone}/instances"
+ :rest/method :httpMethod/get
+ :rest/contentType ""
+ :rest/content ""
+ :rest/params 
+  [{:restParam/name "projectId"
+   :restParam/key "gcpListProjects"
+   :restParam/expression "?? /projects/projectId"}
+   {:restParam/name "zone"
+   :restParam/key "gcpListComputeZones"
+   :restParam/expression "?? /items/*/name"}
+  ]
+ :rest/storeKey "gcpListComputeInstances"
+ :rest/groupId "gcp"
+}
+
+
+
+
+;; start local transactor using client library with 
+;; passwords set, data/log dir set, allows remote access
+;; from datomic pro directory:
+bin/transactor <your transactor properties file, such as: dev-transactor.properties >
+
+;; creating a new database using peer repl
+;; from datomic pro directory:
+bin/repl
+(require '[datomic.api :as d])
+(def db-uri "datomic:dev://localhost:4334/xzero?password=datomic@")
+(d/create-database db-uri)
+
+;; starting console
+bin/console -p 8080 dev datomic:dev://localhost:4334/
+;; open localhost:8080
+
+;; starting peer-server as a brige from client library to local transactor
+ bin/run -m datomic.peer-server -h localhost -p 8998 -a myaccesskey,mysecret -d xp,datomic:dev://localhost:4334/xp
+
+;; from your code dir, using client library
+clj -r
+
+(def cfg {:server-type :peer-server
+                 :access-key "myaccesskey"
+                 :secret "mysecret"
+                 :endpoint "localhost:8998"})
+
+(def client (d/client cfg))
+
+(def conn (d/connect client {:db-name "xzero"}))
+
+; create an entity with doc "hello world"
+(d/transact conn {:tx-data [{:db/doc "hello world"}]})
+
+(def db (d/db conn))
+
+;find entity with the db/doc
+(def all-with-the-doc '[:find (pull ?e [*]) :where [?e :db/doc "hello world"]])
+(d/q all-with-thedoc db)
+
+;find all entities with db/doc
+(def all-with-doc '[:find (pull ?e [*]) :where [?e :db/doc]])
+(d/q all-with-doc db)
+
+;only retrieve entity ids
+(d/q {:query '[:find (pull ?e [*])  :where [?e :db/doc ]] :args [db]})
+
+(d/transact conn {:tx-data [
+{:kvs (mapv (fn [[k v]] {:kv/key k :kv/value v}) [ ["a" "av"] ["b" "bv"] ["c" "cv"] ])}
+  ]})
+
+; remove an attribute from schema
+(d/transact conn {:tx-data [:db/retract [:db/ident :kv/key] :db/unique [:db/ident :db.unique/identity]]})
