@@ -40,6 +40,11 @@ Once the image it built, it's cached.  To delete the image and build a new one:
 
 1. `capstan rmi xzeros; capstan build`
 
+## neanderthal
+Macos MKL installation:
+ln -s /opt/intel/lib/* /usr/local/lib
+ln -s /opt/intel/mkl/lib/* /usr/local/lib 
+
 
 ## Links
 * [Other examples](https://github.com/pedestal/samples)

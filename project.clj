@@ -17,10 +17,15 @@
                  [com.fasterxml.jackson.core/jackson-databind "2.9.8"]
                  [com.google.auth/google-auth-library-oauth2-http "0.12.0"]
                  [com.squareup.okhttp3/okhttp "3.12.1"]
+                 [uncomplicate/neanderthal "0.22.1"]
                  [ch.qos.logback/logback-classic "1.2.3" :exclusions [org.slf4j/slf4j-api]]
                  [org.slf4j/jul-to-slf4j "1.7.25"]
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
                  [org.slf4j/log4j-over-slf4j "1.7.25"]]
+
+  :exclusions [[org.jcuda/jcuda-natives :classifier "apple-x86_64"]
+               [org.jcuda/jcublas-natives :classifier "apple-x86_64"]]
+
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   :source-paths ["src/clj"]

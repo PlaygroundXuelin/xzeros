@@ -4,6 +4,7 @@
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route :as route :refer [expand-routes]]
             [xzeros.service :as service]
+            [xzeros.cmd]
             [xzeros.xzero]
             [xzeros.cloud-config-service]
             [ring.util.response :as ring-resp]))
@@ -42,6 +43,7 @@
       ^:interceptors [service/coerce-body service/content-neg-intc (body-params/body-params)]
       {:get `hello-page}]
      xzeros.xzero/routes
+     xzeros.cmd/routes
      xzeros.cloud-config-service/routes
      ]]
    ]
