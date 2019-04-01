@@ -1091,3 +1091,11 @@ Caused by: java.lang.RuntimeException: EOF while reading
 	... 39 common frames omitted
 10:34:48.817 [qtp2095970915-23] INFO  i.p.http.impl.servlet-interceptor  - {:msg "sending error", :message "Internal server error: exception", :line 215}
 10:38:29.389 [qtp2095970915-27] INFO  io.pedestal.http  - {:msg "POST /cmd/execute", :line 80}
+10:48:44.616 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @10055ms to org.eclipse.jetty.util.log.Slf4jLog
+17:24:40.264 [main] INFO  org.eclipse.jetty.util.log  - Logging initialized @5351ms to org.eclipse.jetty.util.log.Slf4jLog
+17:24:45.903 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - jetty-9.4.10.v20180503; built: 2018-05-03T15:56:21.710Z; git: daa59876e6f384329b122929e70a80934569428c; jvm 1.8.0_162-b12
+17:24:45.942 [nREPL-worker-0] INFO  o.e.j.server.handler.ContextHandler  - Started o.e.j.s.ServletContextHandler@7194837{/,null,AVAILABLE}
+17:24:45.968 [nREPL-worker-0] INFO  o.e.jetty.server.AbstractConnector  - Started ServerConnector@35f41921{HTTP/1.1,[http/1.1, h2c]}{localhost:3701}
+17:24:45.968 [nREPL-worker-0] INFO  org.eclipse.jetty.server.Server  - Started @11059ms
+17:24:55.389 [qtp1350720002-24] INFO  io.pedestal.http  - {:msg "POST /cmd/execute", :line 80}
+17:24:59.563 [qtp1350720002-18] INFO  io.pedestal.http  - {:msg "POST /cmd/execute", :line 80}
