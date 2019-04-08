@@ -45,6 +45,12 @@ Macos MKL installation:
 ln -s /opt/intel/lib/* /usr/local/lib
 ln -s /opt/intel/mkl/lib/* /usr/local/lib 
 
+## redis
+download, extract, make, make test, 
+src/redis-server redis.conf
+src/redis-cli
+src/redis-cli shutdown
+src/redis-cli ping
 
 ## Links
 * [Other examples](https://github.com/pedestal/samples)

@@ -5,6 +5,7 @@
             [io.pedestal.http.route :as route :refer [expand-routes]]
             [xzeros.service :as service]
             [xzeros.cmd]
+            [xzeros.user]
             [xzeros.xzero]
             [xzeros.cloud-config-service]
             [ring.util.response :as ring-resp]))
@@ -44,6 +45,7 @@
       {:get `hello-page}]
      xzeros.xzero/routes
      xzeros.cmd/routes
+     xzeros.user/routes
      xzeros.cloud-config-service/routes
      ]]
    ]

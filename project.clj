@@ -14,6 +14,8 @@
                  [org.clojure/data.json        "0.2.6"]
                  [com.datomic/client-pro "0.8.28"]
 
+                 [redis.clients/jedis "3.0.1"]
+
                  [com.fasterxml.jackson.core/jackson-databind "2.9.8"]
                  [com.google.auth/google-auth-library-oauth2-http "0.12.0"]
                  [com.squareup.okhttp3/okhttp "3.12.1"]
