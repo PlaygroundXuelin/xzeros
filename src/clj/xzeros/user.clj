@@ -57,7 +57,7 @@
    [
     "/login"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
-    {:post `xzeros.user/login}
+    {:get `xzeros.user/login}
     ]
    ]
   )
