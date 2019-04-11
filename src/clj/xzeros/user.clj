@@ -3,6 +3,8 @@
     [io.pedestal.http.body-params :as body-params]
     [xzeros.service]
     [clojure.data.json]
+    [io.pedestal.http.ring-middlewares :as middlewares]
+    [ring.middleware.session.cookie :as cookie]
     [xzeros.db.user :as db-user]))
 
 (defn get-nonce [name]
@@ -41,9 +43,22 @@
   (let [name (-> request :params :name)
         pw (-> request :params :password)
         ]
+    (let [login? (valid-auth name pw)]
+      {:status 200
+       :session {:user (if login? name nil)}
+       :headers {"Content-Type" "application/json"}
+       :body (clojure.data.json/write-str {:data login?})}
+      )
+    )
+  )
+
+(defn logout [request]
+  (let [name (-> request :params :name)
+        ]
     {:status 200
+     :session {:user nil}
      :headers {"Content-Type" "application/json"}
-     :body (clojure.data.json/write-str {:data (valid-auth name pw)})}
+     :body (clojure.data.json/write-str true)}
     )
   )
 
@@ -51,13 +66,18 @@
   [
    "/user"
    ["/nonce"
-    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params) xzeros.service/session-intc]
     {:get `xzeros.user/nonce }
     ]
    [
     "/login"
-    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params) xzeros.service/session-intc]
     {:get `xzeros.user/login}
+    ]
+   [
+    "/logout"
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params) xzeros.service/session-intc]
+    {:get `xzeros.user/logout}
     ]
    ]
   )

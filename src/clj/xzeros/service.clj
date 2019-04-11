@@ -1,6 +1,8 @@
 (ns xzeros.service
   (:require
     [clojure.data.json :as json]
+    [io.pedestal.http.ring-middlewares :as middlewares]
+    [ring.middleware.session.cookie :as cookie]
     [io.pedestal.http.content-negotiation :as conneg]
     )
   )
@@ -16,6 +18,7 @@
 
 (def supported-types ["text/html" "application/edn" "application/json" "text/plain"])
 (def content-neg-intc (conneg/negotiate-content supported-types))
+(def session-intc (middlewares/session {:store (cookie/cookie-store)}))
 
 (defn accepted-type
   [context]
