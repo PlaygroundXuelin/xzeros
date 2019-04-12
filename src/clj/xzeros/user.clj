@@ -43,6 +43,7 @@
   (let [name (-> request :params :name)
         pw (-> request :params :password)
         ]
+    (println "in login user is: " (get-in request [:session :user]))
     (let [login? (valid-auth name pw)]
       {:status 200
        :session {:user (if login? name nil)}
@@ -52,9 +53,20 @@
     )
   )
 
+(defn check [request]
+  (let [session (:session request)
+        name (:user session)]
+    (println "in check user is: " name)
+    {:status 200
+     :headers {"Content-Type" "application/json"}
+     :body (clojure.data.json/write-str {:data name})}
+    )
+  )
+
 (defn logout [request]
   (let [name (-> request :params :name)
         ]
+    (println "in logout user is: " (get-in request [:session :user]))
     {:status 200
      :session {:user nil}
      :headers {"Content-Type" "application/json"}
@@ -68,6 +80,10 @@
    ["/nonce"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params) xzeros.service/session-intc]
     {:get `xzeros.user/nonce }
+    ]
+   ["/check"
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params) xzeros.service/session-intc]
+    {:get `xzeros.user/check }
     ]
    [
     "/login"
