@@ -9,10 +9,8 @@
   )
 
 (defn create-jedis-pool [host port]
-  (JedisPool. (Redis/buildPoolConfig) host port)
+  (Redis/getJedisPool host port)
   )
-
-(def jedis-pool (create-jedis-pool "127.0.0.1" 6379))
 
 (defmacro with-redis-pool [pool redis & body]
   `(with-open [~redis (.getResource ~pool)]
@@ -21,8 +19,7 @@
   )
 
 (defmacro with-redis [redis & body]
-  (concat
-    (list 'xzeros.db.jedis/with-redis-pool 'xzeros.db.jedis/jedis-pool redis)
-    body
-    )
+  `(with-open [~redis (.getResource (create-jedis-pool "127.0.0.1" 6379))]
+     ~@body
+     )
   )
