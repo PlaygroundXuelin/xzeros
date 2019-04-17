@@ -4,6 +4,7 @@
     [io.pedestal.http.ring-middlewares :as middlewares]
     [ring.middleware.session.cookie :as cookie]
     [io.pedestal.http.content-negotiation :as conneg]
+    [xzeros.utils :as utils]
     )
   )
 
@@ -18,7 +19,10 @@
 
 (def supported-types ["text/html" "application/edn" "application/json" "text/plain"])
 (def content-neg-intc (conneg/negotiate-content supported-types))
-(def session-intc (middlewares/session {:store (cookie/cookie-store)}))
+(def cookie-key (utils/new-id-16))
+(println "cookie is " cookie-key)
+(def session-intc (middlewares/session {:store (cookie/cookie-store {:key cookie-key
+                                                                     :cookie-attrs {:max-age 3600}})}))
 
 (defn accepted-type
   [context]

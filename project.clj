@@ -22,6 +22,7 @@
                  [uncomplicate/neanderthal "0.22.1"]
                  [ch.qos.logback/logback-classic "1.2.3" :exclusions [org.slf4j/slf4j-api]]
                  [org.slf4j/jul-to-slf4j "1.7.25"]
+                 [com.auth0/java-jwt "3.8.0"]
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
                  [org.slf4j/log4j-over-slf4j "1.7.25"]]
 

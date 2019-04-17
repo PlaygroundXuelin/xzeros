@@ -3,6 +3,8 @@
     [io.pedestal.http.body-params :as body-params]
             [xzeros.service]
             [clojure.data.json]
+    [xzeros.user]
+    [clojure.string :as str]
             )
   )
 
@@ -31,12 +33,20 @@
       "clojure" (execute-clj script)
       {:error (str "type must be in " supported-script-types ": " cmd-type)})))
 
-(defn rest-execute [request]
-  (let [cmd-type (-> request :json-params :cmd-type)
-        script (-> request :json-params :script)]
-    {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body (clojure.data.json/write-str (execute cmd-type script))}
+(defn rest-execute [{:keys [json-params headers] :as request}]
+  (let [ user (xzeros.user/getAuthUser request)]
+    (if (str/blank? user)
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (clojure.data.json/write-str {:error "permission denied"})}
+
+      (let [cmd-type (json-params :cmd-type)
+            script (json-params :script)]
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (clojure.data.json/write-str (execute cmd-type script))}
+        )
+      )
     )
   )
 

@@ -20,6 +20,7 @@
     <orderEntry type="library" name="Leiningen: cheshire:5.8.0" level="project" />
     <orderEntry type="library" name="Leiningen: clj-time:0.11.0" level="project" />
     <orderEntry type="library" name="Leiningen: clojure-complete:0.2.5" level="project" />
+    <orderEntry type="library" name="Leiningen: com.auth0/java-jwt:3.8.0" level="project" />
     <orderEntry type="library" name="Leiningen: com.cognitect/anomalies:0.1.12" level="project" />
     <orderEntry type="library" name="Leiningen: com.cognitect/hmac-authn:0.1.194" level="project" />
     <orderEntry type="library" name="Leiningen: com.cognitect/http-client:0.1.87" level="project" />

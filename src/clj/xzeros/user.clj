@@ -5,7 +5,13 @@
     [clojure.data.json]
     [io.pedestal.http.ring-middlewares :as middlewares]
     [ring.middleware.session.cookie :as cookie]
-    [xzeros.db.user :as db-user]))
+    [xzeros.db.user :as db-user]
+    [clojure.string :as str])
+  (:import (xzeros Jwt)
+           )
+  )
+
+(def bearerPrefix "Bearer ")
 
 (defn get-nonce [name]
   (get (db-user/find-user name) "nonce")
@@ -30,8 +36,8 @@
     )
   )
 
-(defn nonce [request]
-  (let [name (-> request :params :name)
+(defn nonce [{:keys [params] :as request}]
+  (let [name (params :name)
        ]
     {:status 200
      :headers {"Content-Type" "application/json"}
@@ -39,22 +45,43 @@
     )
   )
 
-(defn login [request]
-  (let [name (-> request :params :name)
-        pw (-> request :params :password)
+(defn login [{:keys [params] :as request}]
+  (let [name (params :name)
+        pw (params :password)
+        login? (valid-auth name pw)
+        headers {"Content-Type" "application/json"}
+        bearer (if login? (Jwt/createTokenForSubject name))
         ]
-    (let [login? (valid-auth name pw)]
-      {:status 200
-       :session {:user (if login? name nil)}
-       :headers {"Content-Type" "application/json"}
-       :body (clojure.data.json/write-str {:data login?})}
-      )
+    {:status 200
+     :headers headers
+     :body (clojure.data.json/write-str {:data bearer})}
     )
   )
 
+(defn getBearerFromHeaders [headers]
+  (let [_ (println "headers: " headers)
+        auth-header (headers "authorization")
+        _ (println "authheader: " auth-header)
+        bearer (if (and auth-header (.startsWith auth-header "Bearer")) (.substring auth-header (.length bearerPrefix)))
+        _ (println "bearer in get: " bearer)
+        ]
+    bearer
+    )
+  )
+
+(defn getSubjectFromHeaders [headers]
+  (let [bearer (getBearerFromHeaders headers)]
+    (if bearer (Jwt/decodeTokenSubject bearer))
+    )
+  )
+
+(defn getAuthUser [{:keys [headers] :as request}]
+  (getSubjectFromHeaders headers)
+  )
+
 (defn check [request]
-  (let [session (:session request)
-        name (:user session)]
+  (let [name (getAuthUser request)
+        ]
     {:status 200
      :headers {"Content-Type" "application/json"}
      :body (clojure.data.json/write-str {:data name})}
@@ -62,10 +89,9 @@
   )
 
 (defn logout [request]
-  (let [name (-> request :params :name)
+  (let [name (getAuthUser request)
         ]
     {:status 200
-     :session {:user nil}
      :headers {"Content-Type" "application/json"}
      :body (clojure.data.json/write-str true)}
     )
