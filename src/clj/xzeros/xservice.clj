@@ -5,6 +5,7 @@
             [io.pedestal.http.route :as route :refer [expand-routes]]
             [xzeros.service :as service]
             [xzeros.cmd]
+            [xzeros.lst]
             [xzeros.user]
             [xzeros.xzero]
             [xzeros.cloud-config-service]
@@ -45,6 +46,7 @@
       {:get `hello-page}]
      xzeros.xzero/routes
      xzeros.cmd/routes
+     xzeros.lst/routes
      xzeros.user/routes
      xzeros.cloud-config-service/routes
      ]]

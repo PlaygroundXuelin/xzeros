@@ -10,10 +10,10 @@
 (deftest home-page-test
   (is (=
        (:body (response-for service :get "/"))
-       "Hello World!"))
+       "Welcome to xzeros!"))
   (is (=
        (:headers (response-for service :get "/"))
-       {"Content-Type" "text/html;charset=UTF-8"
+       {"Content-Type" "text/plain"
         "Strict-Transport-Security" "max-age=31536000; includeSubdomains"
         "X-Frame-Options" "DENY"
         "X-Content-Type-Options" "nosniff"
@@ -28,7 +28,7 @@
        "Clojure 1.9"))
   (is (=
        (:headers (response-for service :get "/about"))
-       {"Content-Type" "text/html;charset=UTF-8"
+       {"Content-Type" "text/plain"
         "Strict-Transport-Security" "max-age=31536000; includeSubdomains"
         "X-Frame-Options" "DENY"
         "X-Content-Type-Options" "nosniff"

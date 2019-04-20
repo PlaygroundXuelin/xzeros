@@ -1,11 +1,13 @@
 (ns xzeros.db.jedis
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [xzeros.config])
   (:import (xzeros Redis)
-           (redis.clients.jedis JedisPool))
+           )
   )
 
+(def key-sep "`_")
 (defn to-key [& args]
-  (str/join "`_" args)
+  (str/join key-sep (map #(.replace % "_" "\\_") args))
   )
 
 (defn create-jedis-pool [host port]
@@ -19,7 +21,8 @@
   )
 
 (defmacro with-redis [redis & body]
-  `(with-open [~redis (.getResource (create-jedis-pool "127.0.0.1" 6379))]
+  `(with-open [~redis (.getResource (create-jedis-pool (get-in @xzeros.config/config [:database :host])
+                                                       (get-in @xzeros.config/config [:database :port])))]
      ~@body
      )
   )

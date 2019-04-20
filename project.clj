@@ -3,6 +3,8 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :repositories [["bintray" "https://dl.bintray.com/jaycroaker/maven"]]
+
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [io.pedestal/pedestal.service "0.5.4"]
 
@@ -24,7 +26,11 @@
                  [org.slf4j/jul-to-slf4j "1.7.25"]
                  [com.auth0/java-jwt "3.8.0"]
                  [org.slf4j/jcl-over-slf4j "1.7.25"]
-                 [org.slf4j/log4j-over-slf4j "1.7.25"]]
+                 [org.slf4j/log4j-over-slf4j "1.7.25"]
+
+                 [it.ozimov/embedded-redis "0.7.2"]
+
+                 ]
 
   :exclusions [[org.jcuda/jcuda-natives :classifier "apple-x86_64"]
                [org.jcuda/jcublas-natives :classifier "apple-x86_64"]]
@@ -32,6 +38,7 @@
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   :source-paths ["src/clj"]
+  :test-paths ["test"]
   :java-source-paths ["src/java"]
   ;; If you use HTTP/2 or ALPN, use the java-agent to pull in the correct alpn-boot dependency
   ;:java-agents [[org.mortbay.jetty.alpn/jetty-alpn-agent "2.0.5"]]

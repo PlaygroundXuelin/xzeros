@@ -62,6 +62,7 @@
     <orderEntry type="library" name="Leiningen: io.pedestal/pedestal.route:0.5.4" level="project" />
     <orderEntry type="library" name="Leiningen: io.pedestal/pedestal.service-tools:0.5.4" level="project" />
     <orderEntry type="library" name="Leiningen: io.pedestal/pedestal.service:0.5.4" level="project" />
+    <orderEntry type="library" name="Leiningen: it.ozimov/embedded-redis:0.7.2" level="project" />
     <orderEntry type="library" name="Leiningen: javax.servlet/javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" name="Leiningen: joda-time:2.8.2" level="project" />
     <orderEntry type="library" name="Leiningen: nrepl:0.6.0" level="project" />

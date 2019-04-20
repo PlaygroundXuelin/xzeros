@@ -36,6 +36,18 @@
     "application/edn"  (pr-str body)
     "application/json" (json/write-str body)))
 
+(def permission-denied-response
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str {:error "permission denied"})}
+  )
+(defn no-impl-response [& args]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str {:error (str "not implemented yet. args: " args) })}
+  )
+
+
 (defn coerce-to
   [response content-type]
   (-> response
