@@ -1,6 +1,7 @@
 package xzeros;
 
 import java.time.Duration;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -36,5 +37,15 @@ public class Redis {
     poolConfig.setNumTestsPerEvictionRun(3);
     poolConfig.setBlockWhenExhausted(true);
     return poolConfig;
+  }
+
+  public static Long hsetStr(Jedis jedis, String k, String f, String v)
+  {
+    return jedis.hset(k, f, v);
+  }
+
+  public static Long hdelStr(Jedis jedis, String k, String[] fs)
+  {
+    return jedis.hdel(k, fs);
   }
 }

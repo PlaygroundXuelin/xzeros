@@ -2,8 +2,9 @@
   (:require
     [io.pedestal.http.body-params :as body-params]
     [xzeros.service]
-    [clojure.data.json]
+    [clojure.data.json :as json]
     [xzeros.user]
+    [xzeros.db.lst :as db-lst]
     [clojure.string :as str]
     )
   )
@@ -27,21 +28,30 @@
       xzeros.service/permission-denied-response
 
       (let [name (params :name)
+            lst-id (db-lst/get-or-new-lst-id user name)
+            items (db-lst/get-lst-items lst-id 0 -1)
             ]
-        (xzeros.service/no-impl-response user name)
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:data {:lst-id lst-id :items items} })}
         )
       )
     )
   )
 
-(defn update-lst [{:keys [params headers] :as request}]
+(defn update-lst [{:keys [json-params headers] :as request}]
   (let [ user (xzeros.user/getAuthUser request)]
     (if (str/blank? user)
       xzeros.service/permission-denied-response
 
-      (let [{:keys [name ]} (params :name)
+      (let [{:keys [name items]} json-params
+            lst-id (db-lst/get-or-new-lst-id user name)
             ]
-        (xzeros.service/no-impl-response user name)
+        (db-lst/set-lst-length lst-id (count items))
+        (db-lst/set-lst-items items lst-id 0)
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:data lst-id })}
         )
       )
     )
@@ -52,9 +62,12 @@
     (if (str/blank? user)
       xzeros.service/permission-denied-response
 
-      (let [{:keys [name ]} (params :name)
+      (let [name (params :name)
             ]
-        (xzeros.service/no-impl-response user name)
+        (db-lst/delete-lst user name)
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:data true})}
         )
       )
     )
@@ -73,7 +86,7 @@
     ]
    ["/update"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
-    {:get `xzeros.lst/update-lst }
+    {:post `xzeros.lst/update-lst }
     ]
    ["/delete"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]

@@ -1,58 +1,67 @@
 (ns xzeros.db.lst
   (:require [xzeros.utils :as utils]
-            [xzeros.db.jedis :as jedis]))
+            [xzeros.db.jedis :as jedis])
+  (:import (xzeros Redis)))
 
-(defn get-lst-ids [user-name lst-name]
-  (jedis/with-redis
-    redis
-    (if (nil? lst-name)
-      (let [k (jedis/to-key "lst" "lsts" "user" user-name)]
-        (.hgetAll redis k)
-        )
-      (let [k (jedis/to-key "lst" "lsts" "user" user-name)]
+(defn- lsts-key [user-name]
+  (jedis/to-key "lst" "lsts" "user" user-name)
+  )
+
+(defn- get-lst-ids [user-name lst-name]
+  (let [k (lsts-key user-name)]
+    (jedis/with-redis
+      redis
+      (if (nil? lst-name)
+        (into {} (.hgetAll redis k))
         {lst-name (.hget redis k lst-name)}
         )
       )
     )
   )
 
-(defn get-lst-items [lst-id begin-index end-index]
-  (jedis/with-redis
-    redis
-    (if (nil? lst-name)
-      (let [k (jedis/to-key "lst" "lst" lst-id)
-            jedis-end (if (neg? end-index) end-index (dec end-index))]
-        (.lrange redis k begin-index jedis-end)
-        )
+(defn delete-lst [user-name lst-name]
+  (let [k (lsts-key user-name)]
+    (jedis/with-redis
+      redis
+      (Redis/hdelStr redis k (into-array String [lst-name]))
       )
     )
+  )
+
+(defn get-lst-id [user-name lst-name]
+  ((get-lst-ids user-name lst-name) lst-name)
+  )
+
+(defn get-or-new-lst-id [user-name lst-name]
+  (let [id (get-lst-id user-name lst-name)]
+    (if (nil? id)
+      (let [new-id (utils/new-uuid)
+            k (lsts-key user-name)]
+        (jedis/with-redis
+          redis
+          (Redis/hsetStr redis k lst-name new-id)
+          )
+        new-id
+        )
+      id
+      )
+    )
+  )
+
+(defn get-lst-items [lst-id begin-index end-index]
+  (jedis/lrange lst-id begin-index end-index)
   )
 
 (defn set-lst-items [items lst-id begin-index]
   (jedis/with-redis
     redis
-    (let [curr-len (.llen redis lst-id)
-          items-count (count items)]
-      (if (> begin-index curr-len)
-        (let [tmp-arr (into-array String (repeat (- begin-index curr-len) ""))]
-          (.rpush redis lst-id tmp-arr)
-          )
-        )
-      (if (< begin-index curr-len)
-        (let [
-              set-count (min items-count (- curr-len begin-index))
-              ]
-          (for [ii [range 0 set-count]]
-            (.lset redis lst-id (+ begin-index ii) (nth ii items))
-            )
-          )
-        )
-      (if (> (+ begin-index items-count) curr-len)
-        (let [push-count0 (- (+ begin-index items-count) curr-len)
-              push-count (min push-count0 items-count)]
-          (.rpush redis lst-id (into-array String (drop (- items-count push-count) items)))
-          )
-        )
-      )
+    (jedis/lrange-set items lst-id begin-index)
   )
 )
+
+(defn set-lst-length [lst-id length]
+  (jedis/with-redis
+    redis
+    (.ltrim redis lst-id 0 (dec length))
+    )
+  )
