@@ -22,20 +22,18 @@
     )
   )
 
-(defn get-or-new [{:keys [params headers] :as request}]
+(defn get-or-new [{:keys [json-params headers] :as request}]
   (let [ user (xzeros.user/getAuthUser request)]
     (if (str/blank? user)
       xzeros.service/permission-denied-response
-
-      (let [name (params :name)
+      (let [name (json-params :name)
             lst-id (db-lst/get-or-new-lst-id user name)
             items (db-lst/get-lst-items lst-id 0 -1)
             ]
         {:status 200
          :headers {"Content-Type" "application/json"}
          :body (json/write-str {:data {:lst-id lst-id :items items} })}
-        )
-      )
+        ))
     )
   )
 
@@ -57,12 +55,12 @@
     )
   )
 
-(defn delete-lst [{:keys [params headers] :as request}]
+(defn delete-lst [{:keys [json-params headers] :as request}]
   (let [ user (xzeros.user/getAuthUser request)]
     (if (str/blank? user)
       xzeros.service/permission-denied-response
 
-      (let [name (params :name)
+      (let [name (json-params :name)
             ]
         (db-lst/delete-lst user name)
         {:status 200

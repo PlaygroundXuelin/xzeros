@@ -4,9 +4,17 @@
             [xzeros.db.user :as user]
             [xzeros.db.lst :as lst]
             [xzeros.db.jedis :as redis]
+            [clojure.data.json :as json]
+            [xzeros.xservice :as service]
+            [io.pedestal.http :as bootstrap]
+            [io.pedestal.test :refer :all]
             )
-  (:import (xzeros RedisTestUtils))
+  (:import (xzeros RedisTestUtils Jwt))
   )
+
+(def service
+  (::bootstrap/service-fn (bootstrap/create-servlet service/service)))
+
 (defn start-test-redis-server []
   (let [port 7934
         _ (swap! xzeros.config/config assoc-in [:database :port] port)]
@@ -91,6 +99,61 @@
         (is (= ["a" "c"] (lst/get-lst-items id 0 -1)))
 
         )
+
+      (let [resp (response-for service :get "/lst/getOrNew")]
+        (is (= 200 (:status resp)))
+        (is (= "{\"error\":\"permission denied\"}" (:body resp)))
+        )
+
+      (let [user "user"
+            bearer (Jwt/createTokenForSubject user)
+            req-headers {"Content-Type" "application/json" "authorization" (str "Bearer " bearer)}
+            resp (response-for service :get (str "/lst/getOrNew") :body "{\"name\": \"abc\"}" :headers req-headers)]
+        (is (= 200 (:status resp)))
+        (let [resp-body (json/read-str (:body resp) :key-fn keyword)
+              data (:data resp-body)
+              lst-id (:lst-id data)
+              items (:items data)
+              ]
+          (is (not (nil? lst-id)))
+          (is (= [] items))
+
+          (let [resp2  (response-for service :post (str "/lst/update") :body (json/write-str {:name "abc" :items ["a0" "a1"]} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp2) :key-fn keyword)
+                data (:data resp-body)
+                ]
+            (is (= lst-id data))
+            )
+
+          (let [resp3  (response-for service :get (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp3) :key-fn keyword)
+                data (:data resp-body)
+                lst-id3 (:lst-id data)
+                items3 (:items data)]
+            (is (= lst-id lst-id3))
+            (is (= items3 ["a0" "a1"]))
+            )
+
+          (let [resp4  (response-for service :get (str "/lst/delete") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp4) :key-fn keyword)
+                data (:data resp-body)
+                ]
+            (is (= true data))
+            )
+
+          (let [resp5  (response-for service :get (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp5) :key-fn keyword)
+                data (:data resp-body)
+                lst-id5 (:lst-id data)
+                items5 (:items data)]
+            (is (not= lst-id lst-id5))
+            (is (= items5 []))
+            )
+
+          )
+       )
+
+
 
       (finally (RedisTestUtils/stopServer test-redis-server)))
     )

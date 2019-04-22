@@ -59,11 +59,8 @@
   )
 
 (defn getBearerFromHeaders [headers]
-  (let [_ (println "headers: " headers)
-        auth-header (headers "authorization")
-        _ (println "authheader: " auth-header)
+  (let [auth-header (headers "authorization")
         bearer (if (and auth-header (.startsWith auth-header "Bearer")) (.substring auth-header (.length bearerPrefix)))
-        _ (println "bearer in get: " bearer)
         ]
     bearer
     )
