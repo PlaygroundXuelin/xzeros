@@ -19,8 +19,6 @@
 
 (defn valid-auth [name password]
   (let [u (db-user/find-user name)]
-    (println "name=" name)
-    (println u)
     (and
       (get u "verified")
       (= password (get u "password")))
@@ -48,15 +46,11 @@
   )
 
 (defn login [{:keys [params] :as request}]
-  (let [_ (println params)
-        name (params :name)
+  (let [name (params :name)
         pw (params :password)
-        _ (println "name=\"" name "\", pw=\"" pw "\"")
         login? (valid-auth name pw)
-        _ (println "login?=" login?)
         headers {"Content-Type" "application/json"}
         bearer (if login? (Jwt/createTokenForSubject name))
-        _ (println "name=" name ", bearer=" bearer)
         ]
     {:status 200
      :headers headers
