@@ -100,7 +100,7 @@
 
         )
 
-      (let [resp (response-for service :get "/lst/getOrNew")]
+      (let [resp (response-for service :post "/lst/getOrNew")]
         (is (= 200 (:status resp)))
         (is (= "{\"error\":\"permission denied\"}" (:body resp)))
         )
@@ -108,7 +108,7 @@
       (let [user "user"
             bearer (Jwt/createTokenForSubject user)
             req-headers {"Content-Type" "application/json" "authorization" (str "Bearer " bearer)}
-            resp (response-for service :get (str "/lst/getOrNew") :body "{\"name\": \"abc\"}" :headers req-headers)]
+            resp (response-for service :post (str "/lst/getOrNew") :body "{\"name\": \"abc\"}" :headers req-headers)]
         (is (= 200 (:status resp)))
         (let [resp-body (json/read-str (:body resp) :key-fn keyword)
               data (:data resp-body)
@@ -125,13 +125,29 @@
             (is (= lst-id data))
             )
 
-          (let [resp3  (response-for service :get (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+          (let [resp3  (response-for service :post (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
                 resp-body (json/read-str (:body resp3) :key-fn keyword)
                 data (:data resp-body)
                 lst-id3 (:lst-id data)
                 items3 (:items data)]
             (is (= lst-id lst-id3))
             (is (= items3 ["a0" "a1"]))
+            )
+
+          (let [resp2  (response-for service :post (str "/lst/addItems") :body (json/write-str {:name "abc" :items ["a2"]} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp2) :key-fn keyword)
+                data (:data resp-body)
+                ]
+            (is (= lst-id data))
+            )
+
+          (let [resp3  (response-for service :post (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp3) :key-fn keyword)
+                data (:data resp-body)
+                lst-id3 (:lst-id data)
+                items3 (:items data)]
+            (is (= lst-id lst-id3))
+            (is (= items3 ["a0" "a1" "a2"]))
             )
 
           (let [resp4  (response-for service :get (str "/lst/delete") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
@@ -141,7 +157,7 @@
             (is (= true data))
             )
 
-          (let [resp5  (response-for service :get (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+          (let [resp5  (response-for service :post (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
                 resp-body (json/read-str (:body resp5) :key-fn keyword)
                 data (:data resp-body)
                 lst-id5 (:lst-id data)

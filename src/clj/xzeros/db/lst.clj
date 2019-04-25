@@ -53,10 +53,7 @@
   )
 
 (defn set-lst-items [items lst-id begin-index]
-  (jedis/with-redis
-    redis
-    (jedis/lrange-set items lst-id begin-index)
-  )
+  (jedis/lrange-set items lst-id begin-index)
 )
 
 (defn set-lst-length [lst-id length]
@@ -64,4 +61,15 @@
     redis
     (.ltrim redis lst-id 0 (dec length))
     )
+  )
+
+(defn add-items [items lst-id]
+  (jedis/with-redis
+    redis
+    (Redis/rpushStr redis lst-id (into-array String items))
+    )
+  )
+
+(defn update-items [items lst-id begin-index]
+  (jedis/lrange-set items lst-id begin-index)
   )

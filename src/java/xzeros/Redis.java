@@ -48,4 +48,8 @@ public class Redis {
   {
     return jedis.hdel(k, fs);
   }
+
+  public static Long rpushStr(Jedis jedis, String k, String[] vals) {
+    return jedis.rpush(k, vals);
+  }
 }

@@ -71,6 +71,42 @@
     )
   )
 
+(defn add-items [{:keys [json-params headers] :as request}]
+  (let [ user (xzeros.user/getAuthUser request)]
+    (if (str/blank? user)
+      xzeros.service/permission-denied-response
+
+      (let [{:keys [name items]} json-params
+            lst-id (db-lst/get-or-new-lst-id user name)
+            ]
+        (db-lst/add-items items lst-id)
+
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:data lst-id })}
+        )
+      )
+    )
+  )
+
+(defn update-items [{:keys [json-params headers] :as request}]
+  (let [ user (xzeros.user/getAuthUser request)]
+    (if (str/blank? user)
+      xzeros.service/permission-denied-response
+
+      (let [{:keys [name items index]} json-params
+            lst-id (db-lst/get-or-new-lst-id user name)
+            ]
+        (db-lst/update-items items lst-id index)
+
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:data lst-id })}
+        )
+      )
+    )
+  )
+
 (def routes
   [
    "/lst"
@@ -80,7 +116,7 @@
     ]
    ["/getOrNew"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
-    {:get `xzeros.lst/get-or-new }
+    {:post `xzeros.lst/get-or-new }
     ]
    ["/update"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
@@ -90,15 +126,19 @@
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
     {:get `xzeros.lst/delete-lst }
     ]
+   ["/addItems"
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
+    {:post `xzeros.lst/add-items }
+    ]
+   ["/updateItems"
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
+    {:post `xzeros.lst/update-items }
+    ]
    ;["/item"
    ; ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
    ; {:get `xzeros.lst/rest-execute }
    ; ]
    ;["/updateItem"
-   ; ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
-   ; {:get `xzeros.lst/rest-execute }
-   ; ]
-   ;["/addItem"
    ; ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
    ; {:get `xzeros.lst/rest-execute }
    ; ]
