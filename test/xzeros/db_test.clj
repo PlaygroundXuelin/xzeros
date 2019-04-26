@@ -150,6 +150,38 @@
             (is (= items3 ["a0" "a1" "a2"]))
             )
 
+          (let [resp2  (response-for service :post (str "/lst/deleteItem") :body (json/write-str {:name "abc" :index 1} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp2) :key-fn keyword)
+                data (:data resp-body)
+                ]
+            (is (= lst-id data))
+            )
+
+          (let [resp3  (response-for service :post (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp3) :key-fn keyword)
+                data (:data resp-body)
+                lst-id3 (:lst-id data)
+                items3 (:items data)]
+            (is (= lst-id lst-id3))
+            (is (= items3 ["a0" "a2"]))
+            )
+
+          (let [resp2  (response-for service :post (str "/lst/deleteItem") :body (json/write-str {:name "abc" :index 0} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp2) :key-fn keyword)
+                data (:data resp-body)
+                ]
+            (is (= lst-id data))
+            )
+
+          (let [resp3  (response-for service :post (str "/lst/getOrNew") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
+                resp-body (json/read-str (:body resp3) :key-fn keyword)
+                data (:data resp-body)
+                lst-id3 (:lst-id data)
+                items3 (:items data)]
+            (is (= lst-id lst-id3))
+            (is (= items3 ["a2"]))
+            )
+
           (let [resp4  (response-for service :get (str "/lst/delete") :body (json/write-str {:name "abc"} :key-fn name) :headers req-headers)
                 resp-body (json/read-str (:body resp4) :key-fn keyword)
                 data (:data resp-body)

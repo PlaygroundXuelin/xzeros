@@ -70,6 +70,16 @@
     )
   )
 
+(defn delete-item [index lst-id]
+  (jedis/with-redis
+    redis
+    (let [uuid (utils/new-uuid)]
+      (Redis/lsetStr redis lst-id index uuid)
+      (.lrem redis lst-id 1 uuid)
+      )
+    )
+  )
+
 (defn update-items [items lst-id begin-index]
   (jedis/lrange-set items lst-id begin-index)
   )

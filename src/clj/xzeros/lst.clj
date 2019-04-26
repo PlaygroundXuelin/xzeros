@@ -89,6 +89,24 @@
     )
   )
 
+(defn delete-item [{:keys [json-params headers] :as request}]
+  (let [ user (xzeros.user/getAuthUser request)]
+    (if (str/blank? user)
+      xzeros.service/permission-denied-response
+
+      (let [{:keys [name index]} json-params
+            lst-id (db-lst/get-or-new-lst-id user name)
+            ]
+        (db-lst/delete-item index lst-id)
+
+        {:status 200
+         :headers {"Content-Type" "application/json"}
+         :body (json/write-str {:data lst-id })}
+        )
+      )
+    )
+  )
+
 (defn update-items [{:keys [json-params headers] :as request}]
   (let [ user (xzeros.user/getAuthUser request)]
     (if (str/blank? user)
@@ -129,6 +147,10 @@
    ["/addItems"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
     {:post `xzeros.lst/add-items }
+    ]
+   ["/deleteItem"
+    ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]
+    {:post `xzeros.lst/delete-item }
     ]
    ["/updateItems"
     ^:interceptors [xzeros.service/coerce-body xzeros.service/content-neg-intc (body-params/body-params)]

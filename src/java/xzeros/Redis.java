@@ -44,6 +44,11 @@ public class Redis {
     return jedis.hset(k, f, v);
   }
 
+  public static String lsetStr(Jedis jedis, String k, long index, String v)
+  {
+    return jedis.lset(k, index, v);
+  }
+
   public static Long hdelStr(Jedis jedis, String k, String[] fs)
   {
     return jedis.hdel(k, fs);
