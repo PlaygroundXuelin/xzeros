@@ -1,12 +1,12 @@
 (ns xzeros.cmd
   (:require
     [io.pedestal.http.body-params :as body-params]
-            [xzeros.service]
-            [clojure.data.json]
+    [xzeros.service]
+    [clojure.data.json]
     [xzeros.user]
     [clojure.string :as str]
-            )
-  )
+    )
+  (:import (xzeros RunProcess)))
 
 (def supported-script-types ["bash" "clojure"])
 
@@ -14,11 +14,13 @@
   {:name ::echo
    :enter #(assoc % :response (xzeros.service/ok (:request %)))})
 
+(def maxStreamLen 10240)
+(def timeoutMs 10000)
 (defn- execute-bash [script]
   (let
-    [
-     results "not implemented yet"]
-    {:data results}))
+    [[code outStr errStr] (RunProcess/exec ["sh" "-c" script] maxStreamLen timeoutMs)
+     ]
+    {:data {:exit code :out outStr :err errStr}}))
 
 (defn- execute-clj [script]
   (let

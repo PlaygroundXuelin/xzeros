@@ -6,6 +6,7 @@
             [xzeros.service :as service]
             [xzeros.cmd]
             [xzeros.lst]
+            [xzeros.cloud]
             [xzeros.user]
             [xzeros.xzero]
             [xzeros.cloud-config-service]
@@ -47,6 +48,7 @@
      xzeros.xzero/routes
      xzeros.cmd/routes
      xzeros.lst/routes
+     xzeros.cloud/routes
      xzeros.user/routes
      xzeros.cloud-config-service/routes
      ]]
